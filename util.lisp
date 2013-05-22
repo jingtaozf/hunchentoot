@@ -278,11 +278,14 @@ to be the corresponding header value as a string."
     (with-character-stream-semantics
      (let* ((*current-error-message* "Corrupted Content-Type header:")
             (type (read-token stream))
-            (subtype (if (eql #\/ (read-char* stream nil))
-                       (read-token stream)
-                       (return-from parse-content-type
-                         ;; try to return something meaningful
-                         (values "application" "octet-stream" nil))))
+            (subtype (let ((subtype-pos (position #\/ type :test #'char=)))
+                       (cond (subtype-pos
+                              (prog1 (subseq type (1+ subtype-pos))
+                                     (setf type (subseq type 0 subtype-pos))))
+                             (t
+                              (return-from parse-content-type
+                                ;; try to return something meaningful
+                                (values "application" "octet-stream" nil))))))
             (parameters (read-name-value-pairs stream))
             (charset (cdr (assoc "charset" parameters :test #'string=)))
             (charset
