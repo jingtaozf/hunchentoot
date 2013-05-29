@@ -276,7 +276,7 @@ and if the content type is \"text\".  CONTENT-TYPE-HEADER is supposed
 to be the corresponding header value as a string."
   (with-input-from-sequence (stream (map 'list 'char-code content-type-header))
     (with-character-stream-semantics
-     (let* ((*current-error-message* "Corrupted Content-Type header:")
+     (let* ((*current-error-message* (format nil "Corrupted Content-Type header:(~a)" content-type-header))
             (type (read-token stream))
             (subtype (let ((subtype-pos (position #\/ type :test #'char=)))
                        (cond (subtype-pos
