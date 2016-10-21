@@ -97,14 +97,14 @@ notation."
 (defun make-socket-stream (socket acceptor)
   "Returns a stream for the socket SOCKET.  The ACCEPTOR argument is
 used to set the timeouts."
-  #-(or :lispworks5 :lispworks6)
+  #-(or :lispworks5 :lispworks6 :lispworks7)
   (when (acceptor-write-timeout acceptor)
     (parameter-error "You need LispWorks 5 or higher for write timeouts."))
   (make-instance 'comm:socket-stream
                  :socket socket
                  :direction :io
                  :read-timeout (acceptor-read-timeout acceptor)
-                 #+(or :lispworks5 :lispworks6) #+(or :lispworks5 :lispworks6)
+                 #+(or :lispworks5 :lispworks6 :lispworks7) #+(or :lispworks5 :lispworks6 :lispworks7)
                  :write-timeout (acceptor-write-timeout acceptor)
                  :element-type 'octet))
 
